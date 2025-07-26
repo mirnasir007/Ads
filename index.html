@@ -225,15 +225,22 @@
             document.getElementById(modalId).classList.remove('hidden'); 
         };
         
-        // ===============================================
-        // *** Edit Modal খোলার ফাংশন আপডেট করা হয়েছে ***
-        // ===============================================
+        // Edit Modal খোলার ফাংশনটি এখানে আপডেট করা হয়েছে
         function openEditAdModal(adName) {
             const adToEdit = adsDetails.find(ad => ad.adsName === adName);
             if (adToEdit) {
                 document.getElementById('edit-ad-name').textContent = adToEdit.adsName;
-                document.getElementById('edit-end-date').value = dayjs(adToEdit.endDate).format('YYYY-MM-DD');
-                document.getElementById('edit-end-time').value = adToEdit.endTime || '23:59'; // সময় সেট করা হচ্ছে
+                
+                const endDateInput = document.getElementById('edit-end-date');
+                const currentEndDate = dayjs(adToEdit.endDate);
+                
+                endDateInput.value = currentEndDate.format('YYYY-MM-DD');
+                
+                // নতুন নিয়ম: তারিখ যেন কমানো না যায়
+                endDateInput.min = currentEndDate.format('YYYY-MM-DD');
+                
+                document.getElementById('edit-end-time').value = adToEdit.endTime || '23:59';
+                
                 openModal('edit-ad-modal');
             }
         }
@@ -245,25 +252,20 @@
         
         loadForm.addEventListener('submit', async (e) => { e.preventDefault(); const newLoad = { date: document.getElementById('load-date').value, recharges: parseFloat(rechargeTkInput.value), usd: parseFloat(usdAmountInput.value) }; if (isNaN(newLoad.usd) || newLoad.usd <= 0) { showNotification("Please enter a valid recharge amount."); return; } showNotification("Adding new load...", false); try { await callApi('addLoadEntry', newLoad); loadAmounts.push(newLoad); renderAll(); showNotification("Load added successfully!", false); closeModal('load-modal'); loadForm.reset(); } catch (error) { /* Handled by callApi */ } });
         adForm.addEventListener('submit', async (e) => { e.preventDefault(); const newAd = { adsName: document.getElementById('ad-name').value, startDate: document.getElementById('start-date').value, startTime: document.getElementById('start-time').value, endDate: document.getElementById('end-date').value, endTime: document.getElementById('end-time').value, dailyBudget: parseFloat(document.getElementById('daily-budget').value) }; const startDateTime = dayjs(`${newAd.startDate}T${newAd.startTime}`), endDateTime = dayjs(`${newAd.endDate}T${newAd.endTime}`); if (endDateTime.isBefore(startDateTime)) { showNotification("End date/time cannot be before start date/time."); return; } showNotification("Adding new ad...", false); try { await callApi('addAdEntry', newAd); adsDetails.push(newAd); renderAll(); showNotification("Ad added successfully!", false); closeModal('ad-modal'); adForm.reset(); } catch (error) { /* Handled by callApi */ } });
-
-        // ===============================================
-        // *** Edit Form সাবমিট ফাংশন আপডেট করা হয়েছে ***
-        // ===============================================
         editAdForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const adName = document.getElementById('edit-ad-name').textContent;
             const newEndDate = document.getElementById('edit-end-date').value;
-            const newEndTime = document.getElementById('edit-end-time').value; // নতুন সময় সংগ্রহ করা হচ্ছে
+            const newEndTime = document.getElementById('edit-end-time').value;
 
             showNotification("Updating ad...", false);
             try {
-                // নতুন payload পাঠানো হচ্ছে
                 const successMessage = await callApi('editAdDetails', { adName, newEndDate, newEndTime });
                 
                 const adIndex = adsDetails.findIndex(ad => ad.adsName === adName);
                 if (adIndex !== -1) {
                     adsDetails[adIndex].endDate = newEndDate;
-                    adsDetails[adIndex].endTime = newEndTime; // লোকাল ডেটা আপডেট করা হচ্ছে
+                    adsDetails[adIndex].endTime = newEndTime;
                 }
                 renderAll();
                 showNotification(successMessage, false);
