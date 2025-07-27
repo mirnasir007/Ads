@@ -225,7 +225,6 @@
             document.getElementById(modalId).classList.remove('hidden'); 
         };
         
-        // Edit Modal খোলার ফাংশনটি এখানে আপডেট করা হয়েছে
         function openEditAdModal(adName) {
             const adToEdit = adsDetails.find(ad => ad.adsName === adName);
             if (adToEdit) {
@@ -236,7 +235,6 @@
                 
                 endDateInput.value = currentEndDate.format('YYYY-MM-DD');
                 
-                // নতুন নিয়ম: তারিখ যেন কমানো না যায়
                 endDateInput.min = currentEndDate.format('YYYY-MM-DD');
                 
                 document.getElementById('edit-end-time').value = adToEdit.endTime || '23:59';
