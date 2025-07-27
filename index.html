@@ -30,6 +30,7 @@
             z-index: 1000; 
             transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
         }
+        /* Scrollbar styles for consistency */
         .table-container::-webkit-scrollbar { height: 6px; }
         .table-container::-webkit-scrollbar-track { background: #f1f5f9; }
         .table-container::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
@@ -95,7 +96,8 @@
                     </div>
                 </div>
                 <div class="overflow-x-auto table-container">
-                    <table class="w-full text-left min-w-[600px]">
+                    <!-- [FIX] Removed min-w-[600px] class to prevent horizontal scroll -->
+                    <table class="w-full text-left">
                         <thead class="bg-slate-100">
                             <tr>
                                 <th class="p-3 font-semibold text-sm">Ad Name</th>
@@ -204,7 +206,19 @@
                 else { statusText = 'Active'; statusClasses = 'bg-green-100 text-green-800'; }
                 const statusHtml = `<span class="px-3 py-1 text-xs font-semibold leading-tight rounded-full ${statusClasses}">${statusText}</span>`;
                 const durationDays = dayjs(ad.endDate).diff(dayjs(ad.startDate), 'day') + 1, totalCost = durationDays * ad.dailyBudget;
-                const row = `<tr class="border-b border-slate-200 hover:bg-slate-50"><td class="p-3 font-medium">${ad.adsName}</td><td class="p-3">${formatCurrency(ad.dailyBudget)}</td><td class="p-3">${formatDate(ad.startDate)} to ${formatDate(ad.endDate)} (${durationDays} days)</td><td class="p-3 font-medium">${formatCurrency(totalCost)}</td><td class="p-3">${statusHtml}</td><td class="p-3 text-right"><button onclick="openEditAdModal('${ad.adsName}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</button></td></tr>`;
+
+                // [FIX] Duration text is broken into two lines to save horizontal space.
+                const durationHtml = `${formatDate(ad.startDate)} to ${formatDate(ad.endDate)}<br><span class="font-medium">(${durationDays} days)</span>`;
+                
+                // [FIX] Added 'align-top' to all cells for better vertical alignment.
+                const row = `<tr class="border-b border-slate-200 hover:bg-slate-50">
+                                <td class="p-3 font-medium align-top">${ad.adsName}</td>
+                                <td class="p-3 align-top">${formatCurrency(ad.dailyBudget)}</td>
+                                <td class="p-3 text-sm align-top">${durationHtml}</td>
+                                <td class="p-3 font-medium align-top">${formatCurrency(totalCost)}</td>
+                                <td class="p-3 align-top">${statusHtml}</td>
+                                <td class="p-3 text-right align-top"><button onclick="openEditAdModal('${ad.adsName}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</button></td>
+                             </tr>`;
                 adsDetailsBody.innerHTML += row;
             });
         }
