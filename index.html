@@ -92,12 +92,12 @@
                 
                 <!-- Dashboard Section -->
                 <section id="dashboard-section" class="content-section">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-5">
                             <div class="bg-purple-100 text-purple-600 p-3 rounded-full"><i data-feather="briefcase" class="w-6 h-6"></i></div>
                             <div>
                                 <h2 class="text-sm font-medium text-slate-500 mb-1">Total Loaded (TK)</h2>
-                                <p id="total-loaded-tk" class="text-2xl sm:text-3xl font-bold text-slate-900">Tk 0.00</p>
+                                <p id="total-loaded-tk" class="text-2xl sm:text-3xl font-bold text-slate-900">0</p>
                             </div>
                         </div>
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-5">
@@ -402,7 +402,7 @@
         const formatCurrency = (amount, currency = 'USD') => {
             const amountFloat = parseFloat(amount) || 0;
             if (currency === 'BDT') {
-                return `Tk ${amountFloat.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                return amountFloat.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
             }
             return `$${amountFloat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         };
