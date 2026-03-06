@@ -206,25 +206,43 @@
         // --- Configuration ---
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyO0rvAz0P1WoG06b_RPqhaE5SNHpSfZCZEOSjvR7gOF1XMt-pPQYIpPhRBMP1tXxmz/exec";
         dayjs.extend(window.dayjs_plugin_isBetween);
-// ১. Right-Click (Context Menu) বন্ধ করা
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-});
-
-// ২. F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U (View Source) ব্লক করা
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'F12' || 
-       (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-       (e.ctrlKey && e.shiftKey && e.key === 'J') || 
-       (e.ctrlKey && e.key === 'U')) {
+// Block Right-Click (Context Menu)
+    document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
-    }
-});
+    });
 
-// ৩. Debugger Loop (DevTools ওপেন করলে ব্রাউজার হ্যাং করবে)
-setInterval(function() {
-    (function() { return false; }['constructor']('debugger')());
-}, 100);
+    // Block Keyboard Shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Block F12 (DevTools)
+        if (e.key === 'F12') {
+            e.preventDefault();
+        }
+        // Block Ctrl + Shift + I (Inspect Element)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+            e.preventDefault();
+        }
+        // Block Ctrl + Shift + J (Console)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+        }
+        // Block Ctrl + Shift + C (Inspect Element)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
+            e.preventDefault();
+        }
+        // Block Ctrl + U (View Page Source)
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+            e.preventDefault();
+        }
+        // Block Ctrl + S (Save Page)
+        if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+            e.preventDefault();
+        }
+    });
+
+    // Debugger Loop (Freezes DevTools if opened via browser menu)
+    setInterval(function() {
+        (function() { return false; }['constructor']('debugger')());
+    }, 100);
         // --- Global State ---
         let loadAmounts = [], adsDetails = [], BDT_PER_USD = 121.0;
         let notificationTimeout;
